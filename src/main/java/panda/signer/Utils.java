@@ -17,9 +17,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 public class Utils {
 
 	/** Algorithm DSA or RSA */
-	public static String ALGORITHM = "DSA";
+	public static final String ALGORITHM = "DSA";
 	/** SHA1withRSA || SHAwithDSA */
-	public static String SIGNATURE_ALGORITHM = "SHAwithDSA";
+	public static final String SIGNATURE_ALGORITHM = "SHAwithDSA";
 
 	/** 4096 */
 	// private static final int BYTE_BUFFER = 4096;
@@ -27,9 +27,11 @@ public class Utils {
 	/**
 	 * Get the bytes of a file.
 	 * 
-	 * @param file the file
+	 * @param file
+	 *            the file
 	 * @return the bytes of the file
-	 * @throws IOException TODO
+	 * @throws IOException
+	 *             TODO
 	 */
 	// private static byte[] getBytesFromFile(final File file) {
 	// byte[] byteArray = null;
@@ -54,9 +56,11 @@ public class Utils {
 	/**
 	 * TODO
 	 * 
-	 * @param fileList TODO
+	 * @param fileList
+	 *            TODO
 	 * @return TODO
-	 * @throws IOException TODO
+	 * @throws IOException
+	 *             TODO
 	 */
 	// private static byte[] getBytesFromArrayList(final List<File> fileList)
 	// throws IOException {
@@ -75,24 +79,30 @@ public class Utils {
 	/**
 	 * Adds files recursive to a list from a directory.
 	 * 
-	 * @param directoryName TODO
-	 * @param fileList the list of files 
+	 * @param directoryName
+	 *            TODO
+	 * @param fileList
+	 *            the list of files
 	 */
 	public static void listFiles(final String directoryName, final ArrayList<File> fileList) {
-		File directory = new File(directoryName);
+		final File directory = new File(directoryName);
 
 		// get all the files from a directory
-		File[] fileArray = directory.listFiles();
+		final File[] fileArray = directory.listFiles();
 		if (fileArray.length != 0 || fileArray != null) {
-			for (File file : fileArray) {
+			for (final File file : fileArray) {
 				if (file.isFile()) {
-					fileList.add(file);
-				} else if (file.isDirectory() && !file.getName().startsWith(".") && !file.getName().equals("sig.properties")) {
+					if (!file.getName().startsWith(".") && !file.getName().startsWith("sig.properties")) {
+						fileList.add(file);
+					} else if (file.getName().startsWith(".")) {
+						System.out.println("Ignoring " + file.getName());
+					} else if (file.getName().equals("sig.properties")) {
+						System.out.println("Ignoring sig.properties");
+					}
+				} else if (file.isDirectory() && !file.getName().startsWith(".")) {
 					listFiles(file.getAbsolutePath(), fileList);
 				} else if (file.getName().startsWith(".")) {
 					System.out.println("Ignoring " + file.getName());
-				} else if (file.getName().equals("sig.properties")) {
-					System.out.println("Ignoring sig.properties");
 				}
 			}
 		}
@@ -101,15 +111,20 @@ public class Utils {
 	/**
 	 * Get hash of a file. (sha256hex)
 	 * 
-	 * @param file the file
+	 * @param file
+	 *            the file
 	 * @return has of the file
-	 * @throws FileNotFoundException TODO
-	 * @throws IOException TODO
-	 * @throws NoSuchAlgorithmException TODO
+	 * @throws FileNotFoundException
+	 *             TODO
+	 * @throws IOException
+	 *             TODO
+	 * @throws NoSuchAlgorithmException
+	 *             TODO
 	 */
-	public static final String getHashOfFile(final File file) throws FileNotFoundException, IOException, NoSuchAlgorithmException {
-		FileInputStream fis = new FileInputStream(file);
-		String hash = DigestUtils.sha256Hex(fis);
+	public static final String getHashOfFile(final File file)
+			throws FileNotFoundException, IOException, NoSuchAlgorithmException {
+		final FileInputStream fis = new FileInputStream(file);
+		final String hash = DigestUtils.sha256Hex(fis);
 		fis.close();
 		return hash;
 	}
