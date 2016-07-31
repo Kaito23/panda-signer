@@ -24,15 +24,15 @@ public class PrivatekeyReader {
 	 *             when there is a problem
 	 */
 	public final PrivateKey get(final String filename) throws Exception {
-		File f = new File(filename);
-		FileInputStream fis = new FileInputStream(f);
-		DataInputStream dis = new DataInputStream(fis);
-		byte[] keyBytes = new byte[(int) f.length()];
+		final File f = new File(filename);
+		final FileInputStream fis = new FileInputStream(f);
+		final DataInputStream dis = new DataInputStream(fis);
+		final byte[] keyBytes = new byte[(int) f.length()];
 		dis.readFully(keyBytes);
 		dis.close();
 
-		PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
-		KeyFactory kf = KeyFactory.getInstance(Utils.ALGORITHM);
+		final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
+		final KeyFactory kf = KeyFactory.getInstance(Utils.ALGORITHM);
 		return kf.generatePrivate(spec);
 	}
 }

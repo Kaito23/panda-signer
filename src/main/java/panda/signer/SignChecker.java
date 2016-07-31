@@ -53,7 +53,6 @@ public class SignChecker {
 			for (final File file : fileList) {
 				try {
 					md5Strings += Utils.getHashOfFile(file);
-					System.out.println(file.getName() + " --> " + md5Strings);
 				} catch (final NoSuchAlgorithmException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -78,7 +77,6 @@ public class SignChecker {
 	 *             TODO
 	 */
 	private boolean verify(final byte[] data, final String signature) {
-		System.out.println("signature -> " + signature);
 		boolean filesVerified = false;
 		try {
 			final Signature sign = Signature.getInstance(Utils.SIGNATURE_ALGORITHM);

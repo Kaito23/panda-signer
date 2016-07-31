@@ -26,7 +26,6 @@ public class Generator {
 	public final File generateKeypair(final String path) {
 		final File selectedDirectory = new File(path);
 		final String pathToKeyDirectory = selectedDirectory.getAbsolutePath();
-		System.out.println(pathToKeyDirectory);
 		generateKeys(path);
 		return selectedDirectory;
 	}

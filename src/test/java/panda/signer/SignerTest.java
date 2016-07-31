@@ -17,7 +17,6 @@ public class SignerTest {
 	public final void testCreateSignFile() {
 		final String ppkPath = UtilsTest.class.getResource("priv").getPath();
 		final String path = UtilsTest.class.getResource("folder").getPath();
-		System.out.println("path = " + path);
 		signer.createSignFile(ppkPath, path);
 
 		final SignChecker signChecker = new SignChecker();

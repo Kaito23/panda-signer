@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
@@ -39,8 +38,6 @@ public class Signer {
 	 */
 	public final void createSignFile(final String privatekeyFolderPath, final String local) {
 		this.privateKeyPath = privatekeyFolderPath;
-		System.out.println("create sigfile");
-
 		final Properties prop = new Properties();
 		ArrayList<File> fileList = null;
 		final String sigFilePath = local + "/sig.properties";
@@ -67,7 +64,6 @@ public class Signer {
 			// byte[] byteList = Utils.getBytesFromArrayList(fileList);
 			// String signature = createSignature(byteList);
 
-			System.out.println("signaturecombination >> " + signaturecombination);
 			final String signature = createSignature(signaturecombination.getBytes());
 			prop.setProperty("Signature", signature);
 
@@ -85,29 +81,22 @@ public class Signer {
 	 *            the file as byte array
 	 * @return the signature to the overgiven file
 	 */
-	final String createSignature(final byte[] file) {
+	private String createSignature(final byte[] file) {
 		byte[] byteArraySignature = null;
 		try {
 			final PrivatekeyReader privateKeyReader = new PrivatekeyReader();
 			final PrivateKey privateKey = privateKeyReader.get(privateKeyPath);
 			final Signature signature = Signature.getInstance(Utils.SIGNATURE_ALGORITHM);
 			signature.initSign(privateKey);
-			System.out.println("file.length is = " + file.length);
 			// signature.update(file, 0, file.length);
-			System.out.println("really !!! last try :/");
 			signature.update(file);
 			byteArraySignature = signature.sign();
+			System.out.println("Signature is: " + new String(Base64.encodeBase64(byteArraySignature), "UTF-8"));
 		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		try {
-			System.out.println("Signature is: " + new String(Base64.encodeBase64(byteArraySignature), "UTF-8"));
-		} catch (final UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		final byte[] encryptedByteValue = Base64.encodeBase64(byteArraySignature);
 		String returner;
 		returner = new String(encryptedByteValue, DEFAULT_CHARSET);
