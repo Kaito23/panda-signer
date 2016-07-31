@@ -26,21 +26,23 @@ public class SignChecker {
 	/**
 	 * Verifies the files.
 	 * 
-	 * @param publickeyPath path to the publickey
-	 * @param local the path to the app directory
+	 * @param publickeyPath
+	 *            path to the publickey
+	 * @param local
+	 *            the path to the app directory
 	 * @return true if files are correct
 	 */
 	public final boolean verify(final String publickeyPath, final String local) {
 		this.publickeyPath = publickeyPath;
 		boolean filesVerified = false;
-		Properties prop = new Properties();
-		String propertiesPath = local + File.separator + "sig.properties";
+		final Properties prop = new Properties();
+		final String propertiesPath = local + File.separator + "sig.properties";
 		try (InputStream input = new FileInputStream(propertiesPath)) {
 			// load a properties file
 			prop.load(input);
 			// get the property value and print it out
-			String propertySignature = prop.getProperty("Signature");
-			ArrayList<File> fileList = new ArrayList<File>();
+			final String propertySignature = prop.getProperty("Signature");
+			final ArrayList<File> fileList = new ArrayList<File>();
 			Utils.listFiles(local, fileList);
 
 			// byte[] bytesFromArrayList =
@@ -48,16 +50,17 @@ public class SignChecker {
 			// filesVerified = verify(bytesFromArrayList, propertySignature);
 
 			String md5Strings = "";
-			for (File file : fileList) {
+			for (final File file : fileList) {
 				try {
 					md5Strings += Utils.getHashOfFile(file);
-				} catch (NoSuchAlgorithmException e) {
+					System.out.println(file.getName() + " --> " + md5Strings);
+				} catch (final NoSuchAlgorithmException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 			filesVerified = verify(md5Strings.getBytes(), propertySignature);
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			ex.printStackTrace();
 		}
 		return filesVerified;
@@ -66,21 +69,25 @@ public class SignChecker {
 	/**
 	 * Verifies the files.
 	 * 
-	 * @param data the data of all files from a filelist
-	 * @param signature the signature from properties
+	 * @param data
+	 *            the data of all files from a filelist
+	 * @param signature
+	 *            the signature from properties
 	 * @return true if files are verified correct
-	 * @throws SignatureException TODO
+	 * @throws SignatureException
+	 *             TODO
 	 */
 	private boolean verify(final byte[] data, final String signature) {
+		System.out.println("signature -> " + signature);
 		boolean filesVerified = false;
 		try {
-			Signature sign = Signature.getInstance(Utils.SIGNATURE_ALGORITHM);
-			PublickeyReader publicKeyReader = new PublickeyReader();
-			PublicKey publicKey = publicKeyReader.get(publickeyPath);
+			final Signature sign = Signature.getInstance(Utils.SIGNATURE_ALGORITHM);
+			final PublickeyReader publicKeyReader = new PublickeyReader();
+			final PublicKey publicKey = publicKeyReader.get(publickeyPath);
 			sign.initVerify(publicKey);
 			sign.update(data);
 			filesVerified = sign.verify(Base64.decodeBase64(signature.getBytes("UTF-8")));
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			ex.printStackTrace();
 		}
 		return filesVerified;
